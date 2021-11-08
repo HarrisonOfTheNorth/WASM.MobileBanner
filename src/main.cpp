@@ -1,6 +1,9 @@
 #include <iostream>
-#include <emscripten.h>
 #include <SDL2/SDL.h>
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
 
 const int SCREENWIDTH = 320;
 const int SCREENHEIGHT = 100;
@@ -41,5 +44,9 @@ int main()
 
 	SDL_UpdateWindowSurface(window);
 
+#if defined(__EMSCRIPTEN__)
 	emscripten_set_main_loop(mainloop, -1, 1);
+#else
+
+#endif
 }
