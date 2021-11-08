@@ -26,7 +26,7 @@ app:
 	rm -rf $(BUILD_DIR)/app*
 	$(CC) $(SRC_FILES) $(APP_COMPILERFLAGS) $(APP_LINKERFLAGS) $(APP_INCLUDES) $(APP_LIBS) $(APP_OUTPUT)
 
-runapp:
+apprun:
 	./build/debug/application
 
 wasm:
@@ -36,7 +36,7 @@ wasm:
 	rm -rf $(BUILD_DIR)/app*
 	$(EC) $(SRC_FILES) $(WASM_COMPILERFLAGS) $(WASM_LINKERFLAGS) $(WASM_INCLUDES) $(WASM_LIBS) $(WASM_OUTPUT) $(WASM_SHELLFILETEMPLATE) $(WASM_PRELOAD)
 
-runwasm: 
+wasmrun: 
 	python3 -m http.server 
 
 clean:

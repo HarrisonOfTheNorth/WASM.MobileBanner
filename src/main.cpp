@@ -28,28 +28,14 @@ void Dispose()
 	renderer = NULL;
 }
 
-SDL_Texture *LoadTexture(std::string path)
+SDL_Texture *LoadTexture(const char *path)
 {
-	//The final texture
 	SDL_Texture *newTexture = NULL;
+	newTexture = IMG_LoadTexture(renderer, path);
 
-	//Load image at specified path
-	SDL_Surface *loadedSurface = IMG_Load(path.c_str());
-	if (loadedSurface == NULL)
+	if (newTexture == NULL)
 	{
-		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
-	}
-	else
-	{
-		//Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-		if (newTexture == NULL)
-		{
-			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
-		}
-
-		//Get rid of old loaded surface
-		SDL_FreeSurface(loadedSurface);
+		printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
 	}
 
 	return newTexture;
@@ -57,10 +43,8 @@ SDL_Texture *LoadTexture(std::string path)
 
 bool LoadMedia()
 {
-	//Loading success flag
 	bool success = true;
 
-	//Load PNG texture
 	tex_square_white_32x32 = LoadTexture("resources/square_white_32x32.png");
 	if (tex_square_white_32x32 == NULL)
 	{
@@ -83,7 +67,7 @@ void MainLoop()
 		}
 	}
 	x++;
-	std::cout << "looping" << x << std::endl;
+	//std::cout << "looping" << x << std::endl;
 
 	SDL_RenderClear(renderer);
 
@@ -128,11 +112,13 @@ int main()
 	{
 	}
 
+#if defined(__EMSCRIPTEN__)
 	screenSurface = SDL_GetWindowSurface(window);
 
 	if (screenSurface == NULL)
 	{
 	}
+#endif
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
@@ -157,7 +143,7 @@ int main()
 
 		float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
-		std::cout << floor(16.666f - elapsedMS) << std::endl; // 16.666 is 1/60th of a second
+		//std::cout << floor(16.666f - elapsedMS) << std::endl; // 16.666 is 1/60th of a second
 
 		SDL_Delay(floor(16.666f - elapsedMS)); // delay so that the complete frame time is 1/60th of a second.
 	}
