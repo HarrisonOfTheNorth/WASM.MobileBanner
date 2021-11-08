@@ -8,9 +8,12 @@
 const int SCREENWIDTH = 320;
 const int SCREENHEIGHT = 100;
 
+bool isRunning = true;
+SDL_Event event;
+
 int x = 0;
 
-void mainloop()
+void MainLoop()
 {
 	x++;
 	std::cout << "looping" << x << std::endl;
@@ -45,8 +48,33 @@ int main()
 	SDL_UpdateWindowSurface(window);
 
 #if defined(__EMSCRIPTEN__)
-	emscripten_set_main_loop(mainloop, -1, 1);
+	emscripten_set_main_loop(MainLoop, -1, 1);
 #else
+	while (isRunning)
+	{
+		Uint64 start = SDL_GetPerformanceCounter();
 
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				isRunning = false;
+			}
+		}
+
+		MainLoop();
+
+		Uint64 end = SDL_GetPerformanceCounter();
+
+		float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+
+		std::cout << floor(16.666f - elapsedMS) << std::endl; // 16.666 is 1/60th of a second
+
+		SDL_Delay(floor(16.666f - elapsedMS)); // delay so that the complete frame time is 1/60th of a second.
+	}
 #endif
+
+	SDL_Quit();
+
+	return EXIT_SUCCESS;
 }
