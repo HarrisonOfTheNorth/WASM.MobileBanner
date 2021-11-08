@@ -11,7 +11,7 @@ APP_COMPILERFLAGS = -std=c++11 -Wall -O0 -g
 APP_LINKERFLAGS = -lsdl2 -lsdl2_image
 APP_OUTPUT = -o build/debug/application
 
-WASM_INCLUDES =
+WASM_INCLUDES = -Iinclude
 WASM_LIBS = 
 WASM_COMPILERFLAGS = -std=c++17 -O3 -s WASM=1 
 WASM_LINKERFLAGS = -lSDL2
