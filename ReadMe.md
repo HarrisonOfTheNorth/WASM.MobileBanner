@@ -11,6 +11,7 @@
 
 - https://emscripten.org/docs/index.html
 - https://emscripten.org/docs/getting_started/downloads.html
+- https://lazyfoo.net/tutorials/SDL/index.php
 - https://github.com/OneLoneCoder/olcPixelGameEngine
 
 ## Videos
@@ -19,3 +20,7 @@
 - https://www.youtube.com/watch?v=MrI5kkVY6zk&t=637s
 - https://www.youtube.com/watch?v=KsG6dJlLBDw&list=PL2RPjWnJduNmXHRYwdtublIPdlqocBoLS
 - https://www.youtube.com/watch?v=Dyz9O7s7B8w&t=983s
+
+Notes.
+
+WASM? --use-preload-plugins
