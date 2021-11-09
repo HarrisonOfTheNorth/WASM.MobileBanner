@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL_ttf.h>
 #include <vector>
 
 #if defined(__EMSCRIPTEN__)
@@ -20,11 +21,16 @@ SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
 SDL_Renderer *renderer = NULL;
 
+// image textures
 SDL_Texture *tex_logo_512x512 = NULL;
 SDL_Texture *tex_advertisementballoon_512x512 = NULL;
 SDL_Texture *tex_qrcodeballoon_512x512 = NULL;
 SDL_Texture *tex_square_black_32x32 = NULL;
 SDL_Texture *tex_square_white_32x32 = NULL;
+SDL_Texture *tex_youataresource_463x62 = NULL;
+
+// text textures
+SDL_Texture *tex_youataresource = NULL;
 
 std::vector<MobileBanner::Entity> fixedEntities{
     MobileBanner::Entity(MobileBanner::Vector2f(0, 0, SCREENWIDTH, SCREENHEIGHT), tex_square_white_32x32),
@@ -68,8 +74,6 @@ bool LoadMedia()
 {
 	bool success = true;
 
-	//tex_square_white_32x32 = LoadTexture("./resources/square_white_32x32.png");
-
 	SDL_Surface *image = SDL_LoadBMP("resources/square_white_32x32.bmp");
 	tex_square_white_32x32 = SDL_CreateTextureFromSurface(renderer, image);
 	if (tex_square_white_32x32 == NULL)
@@ -107,6 +111,14 @@ bool LoadMedia()
 	if (tex_qrcodeballoon_512x512 == NULL)
 	{
 		printf("Failed to load texture image 5!\n");
+		success = false;
+	}
+
+	image = SDL_LoadBMP("resources/youataresource463x62.bmp");
+	tex_youataresource_463x62 = SDL_CreateTextureFromSurface(renderer, image);
+	if (tex_youataresource_463x62 == NULL)
+	{
+		printf("Failed to load texture image 6!\n");
 		success = false;
 	}
 
@@ -207,6 +219,38 @@ void RenderLogo()
 
 	MobileBanner::Entity yatrlogo(MobileBanner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
 	RenderEntity(yatrlogo);
+
+	MobileBanner::Entity text(MobileBanner::Vector2f(SCREENWIDTH / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
+	RenderEntity(text);
+}
+
+void RenderText()
+{
+	/*
+	if (tex_youataresource == NULL)
+	{
+		TTF_Font *font = TTF_OpenFont("resources/roboto-bold.ttf", 16);
+
+		SDL_Color color = {8, 64, 136};
+		SDL_Surface *surface = TTF_RenderText_Solid(font,
+							    "You-At-A-Resource, y@R", color);
+		tex_youataresource = SDL_CreateTextureFromSurface(renderer, surface);
+
+		SDL_FreeSurface(surface);
+
+		if (tex_youataresource == NULL)
+		{
+			std::cout << "Failed to create text text 1." << std::endl;
+		}
+	}
+
+	int texW = 0;
+	int texH = 0;
+	SDL_QueryTexture(tex_youataresource, NULL, NULL, &texW, &texH);
+	SDL_Rect dst = {100, 45, texW, texH};
+
+	SDL_RenderCopy(renderer, tex_youataresource, NULL, &dst);
+	*/
 }
 
 void RenderBalloon()
@@ -280,6 +324,8 @@ void MainLoop()
 		}
 	}
 
+	TTF_Init();
+
 	WindowClear();
 
 	RenderWhiteBackground();
@@ -287,6 +333,8 @@ void MainLoop()
 	RenderBorders();
 
 	RenderLogo();
+
+	RenderText();
 
 	RenderBalloon();
 

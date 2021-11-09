@@ -98,6 +98,18 @@ The bottom three, however, you will use, the first of them to install tree, if y
 - Locate the include folder: Best bet is doing a reinstall and finding the path from the output.
 - Tree: run `tree` to see if it is linked to in the current folder.
 
+### SDL_tff
+
+- Check: `pkg-config --libs sdl2_ttf`
+- Example: `-L/opt/homebrew/lib -lSDL2_ttf -lSDL2`
+- Install: `brew install sdl2_ttf`
+- Reinstall: `brew reinstall sdl2_ttf`
+- Upgrade: `brew upgrade sdl2_ttf`
+- Locate the include folder: Best bet is doing a reinstall and finding the path from the output, in our case it said `/opt/homebrew/Cellar/sdl2_ttf/2.0.15`, so we looked in the folders downstream of this path (`ls /opt/homebrew/Cellar/sdl2_ttf/2.0.15`)
+- include Symlink Example: `ln -s /opt/homebrew/Cellar/sdl2_ttf/2.0.15/include/SDL2 include/SDL_ttf`
+- lib Symlink Example: `ln -s /opt/homebrew/Cellar/sdl2_ttf/2.0.15/lib lib/SDL2_ttf`
+- Tree: run `tree` to see if it is linked to in the current folder.
+
 ## Links
 
 - https://emscripten.org/docs/index.html
