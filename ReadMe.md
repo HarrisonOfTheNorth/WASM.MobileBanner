@@ -49,24 +49,32 @@ Depending upon your symlinks, it should look something like the following:
 ├── ReadMe.md
 ├── build
 │   └── debug
-│       ├── hello.data
-│       ├── hello.html
-│       ├── hello.js
-│       └── hello.wasm
 ├── include
 │   ├── MobileBanner
+│   │   ├── Entity.hpp
 │   │   └── Maths.hpp
 │   ├── SDL2 -> /opt/homebrew/Cellar/sdl2/2.0.16/include/SDL2
-│   └── SDL_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2
+│   ├── SDL_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2
+│   └── SDL_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/include/SDL2
 ├── lib
-│   └── SDL2_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/lib
+│   ├── SDL2_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/lib
+│   └── SDL2_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/lib
 ├── resources
+│   ├── Roboto-Bold.ttf
+│   ├── advertisementballoon512x512.bmp
 │   ├── advertisementballoon512x512.png
+│   ├── logo512x512.bmp
 │   ├── logo512x512.png
+│   ├── qrcodeballoon512x512.bmp
 │   ├── qrcodeballoon512x512.png
+│   ├── square_black_32x32.bmp
 │   ├── square_black_32x32.png
-│   └── square_white_32x32.png
+│   ├── square_white_32x32.bmp
+│   ├── square_white_32x32.png
+│   ├── youataresource463x62.bmp
+│   └── youataresource463x62.png
 ├── src
+│   ├── Entity.cpp
 │   └── main.cpp
 └── template.html
 ```
