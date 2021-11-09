@@ -156,10 +156,10 @@ The bottom three, however, you will use, the first of them to install tree, if y
 
 ## Videos
 
-- https://www.youtube.com/watch?v=VeyMi337AwA&t=96s
 - https://www.youtube.com/watch?v=MrI5kkVY6zk&t=637s
 - https://www.youtube.com/watch?v=KsG6dJlLBDw&list=PL2RPjWnJduNmXHRYwdtublIPdlqocBoLS
 - https://www.youtube.com/watch?v=Dyz9O7s7B8w&t=983s
+- https://www.youtube.com/watch?v=VeyMi337AwA&t=96s
 
 Notes.
 
