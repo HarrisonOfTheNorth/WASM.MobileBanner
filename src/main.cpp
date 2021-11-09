@@ -32,7 +32,7 @@ std::vector<MobileBanner::Entity> fixedEntities{
 
 float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_square_black_32x32)
 
-// baloon variables
+// balloon variables
 float x = SCREENWIDTH * 0.1; // balloon tex x
 float y = SCREENHEIGHT / 5;  // balloon tex y
 float scale = 0.25;	     // balloon rendering scale
@@ -159,6 +159,25 @@ void RenderEntity(MobileBanner::Entity &p_entity)
 	SDL_RenderCopy(renderer, p_entity.GetTex(), &src, &dst);
 }
 
+void RenderWhiteBackground()
+{
+	// Example of rendering a texture without abstracting dimensions to Entity class:
+	// Compare this to generic RenderEntity method above.
+	SDL_Rect src;
+	src.x = 0;
+	src.y = 0;
+	src.w = 32;
+	src.h = 32;
+
+	SDL_Rect dst;
+	dst.x = 0;
+	dst.y = 0;
+	dst.w = SCREENWIDTH;
+	dst.h = SCREENHEIGHT;
+
+	SDL_RenderCopy(renderer, tex_square_white_32x32, &src, &dst);
+}
+
 void RenderBorders()
 {
 	for (MobileBanner::Entity &entity : fixedEntities)
@@ -175,7 +194,21 @@ void RenderLogo()
 	RenderEntity(yatrlogo);
 }
 
-//int x = 0;
+void RenderBalloon()
+{
+	{
+		MobileBanner::Entity red(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
+		MobileBanner::Entity blue(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
+		if (x > SCREENWIDTH / 3)
+		{
+			RenderEntity(red);
+		}
+		else
+		{
+			RenderEntity(blue);
+		}
+	}
+}
 
 void MainLoop()
 {
@@ -186,26 +219,10 @@ void MainLoop()
 			isRunning = false;
 		}
 	}
-	//x++;
-	//std::cout << "looping" << x << std::endl;
 
 	WindowClear();
 
-	//Render texture to screen
-
-	SDL_Rect src;
-	src.x = 0;
-	src.y = 0;
-	src.w = 32;
-	src.h = 32;
-
-	SDL_Rect dst;
-	dst.x = 0;
-	dst.y = 0;
-	dst.w = SCREENWIDTH;
-	dst.h = SCREENHEIGHT;
-
-	SDL_RenderCopy(renderer, tex_square_white_32x32, &src, &dst);
+	RenderWhiteBackground();
 
 	RenderBorders();
 
