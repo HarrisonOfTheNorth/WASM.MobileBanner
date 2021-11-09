@@ -1,5 +1,29 @@
 # WASM
 
+See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
+
+## Introduction
+
+We wanted to animate some webpage banners, similar to how we used to do it in Flash, which is no longer supported.
+
+The solution, of course, is WASM - WebAssembly - which is supported by all the major browsers.
+
+This repo is a work in progress, however you can see it working at the above link.
+
+It was written in C++ using SDL2 and compiled using emscripten.
+
+_It also runs on the desktop as an application!_
+
+## Setup
+
+The following is our own aide memoire to ourselves so that we can remember what we did, hopefully we will reformat it into a tutorial when we get the time.
+
+You'll notice in the resources folder that there are both .bmp files and .png files. The reason for this is that the library setup for .png files for SDL2 can be tricky, yet BMPs run out of the box.
+
+Similarly, you will see that the load font method is commented out - although we could compile them for an app, we couldn't get the compiler paths right for the WASM build, so we just loaded the text as an image instead. Yup, a pretty good hack for the moment.
+
+Hopefully there are enough tips below to get a running start!
+
 ## Platform
 
 The following setup is for MacOS, which we use for outputting to Mac, iOS, and Android. As WASM is platform independant, WASM produced on MacOS is also suitable for Windows deployments. We don't currently have any guides for building SDL2 and creating WASM from it, using Windows.
