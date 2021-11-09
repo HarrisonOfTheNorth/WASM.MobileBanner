@@ -20,8 +20,8 @@ SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
 SDL_Renderer *renderer = NULL;
 
-SDL_Texture *tex_advertisementballoon_512x512 = NULL;
 SDL_Texture *tex_logo_512x512 = NULL;
+SDL_Texture *tex_advertisementballoon_512x512 = NULL;
 SDL_Texture *tex_qrcodeballoon_512x512 = NULL;
 SDL_Texture *tex_square_black_32x32 = NULL;
 SDL_Texture *tex_square_white_32x32 = NULL;
@@ -86,12 +86,27 @@ bool LoadMedia()
 		success = false;
 	}
 
-	// tex_logo_512x512
 	image = SDL_LoadBMP("resources/logo512x512.bmp");
 	tex_logo_512x512 = SDL_CreateTextureFromSurface(renderer, image);
 	if (tex_logo_512x512 == NULL)
 	{
 		printf("Failed to load texture image 3!\n");
+		success = false;
+	}
+
+	image = SDL_LoadBMP("resources/advertisementballoon512x512.bmp");
+	tex_advertisementballoon_512x512 = SDL_CreateTextureFromSurface(renderer, image);
+	if (tex_advertisementballoon_512x512 == NULL)
+	{
+		printf("Failed to load texture image 4!\n");
+		success = false;
+	}
+
+	image = SDL_LoadBMP("resources/qrcodeballoon512x512.bmp");
+	tex_qrcodeballoon_512x512 = SDL_CreateTextureFromSurface(renderer, image);
+	if (tex_qrcodeballoon_512x512 == NULL)
+	{
+		printf("Failed to load texture image 5!\n");
 		success = false;
 	}
 
@@ -210,6 +225,51 @@ void RenderBalloon()
 	}
 }
 
+void UpdateBalloonAnimationValues()
+{
+	if (forwards)
+	{
+		x += 0.4f;
+	}
+	else
+	{
+		x -= 0.4f;
+	}
+
+	if (downwards)
+	{
+		y += 0.4f;
+	}
+	else
+	{
+		y -= 0.4f;
+	}
+
+	if (growing)
+	{
+		scale += 0.002;
+	}
+	else
+	{
+		scale -= 0.002;
+	}
+
+	if (x > SCREENWIDTH * 0.9 || x < -(SCREENHEIGHT * 0.4))
+	{
+		forwards = !forwards;
+	}
+
+	if (y > SCREENHEIGHT * 0.6 || y < -(SCREENHEIGHT * 1))
+	{
+		downwards = !downwards;
+	}
+
+	if (scale > 0.5 || scale < 0.1) // 0.0125
+	{
+		growing = !growing;
+	}
+}
+
 void MainLoop()
 {
 	while (SDL_PollEvent(&event))
@@ -227,6 +287,10 @@ void MainLoop()
 	RenderBorders();
 
 	RenderLogo();
+
+	RenderBalloon();
+
+	UpdateBalloonAnimationValues();
 
 	//Update screen
 	SDL_RenderPresent(renderer);
