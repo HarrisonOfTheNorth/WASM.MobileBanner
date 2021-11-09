@@ -42,7 +42,7 @@ float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_squ
 float x = SCREENWIDTH * 0.1; // balloon tex x
 float y = SCREENHEIGHT / 5;  // balloon tex y
 float scale = 0.25;	     // balloon rendering scale
-bool forwards = true;	     // is balloon moving tot he right?
+bool forwards = true;	     // is balloon moving to the right?
 bool growing = true;	     // is balloon growing in size?
 bool downwards = true;	     // is balloon moving downwards?
 
@@ -220,6 +220,7 @@ void RenderLogo()
 	MobileBanner::Entity yatrlogo(MobileBanner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
 	RenderEntity(yatrlogo);
 
+	// ToDo: although the logo above scales, if the screen dimensions change, this rendered image does not. Fix it!
 	MobileBanner::Entity text(MobileBanner::Vector2f(SCREENWIDTH / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
 	RenderEntity(text);
 }
@@ -324,8 +325,6 @@ void MainLoop()
 		}
 	}
 
-	TTF_Init();
-
 	WindowClear();
 
 	RenderWhiteBackground();
@@ -351,6 +350,8 @@ int main()
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 	}
+
+	TTF_Init();
 
 	window = SDL_CreateWindow(
 	    "Mobile Banner 320x100",
@@ -381,8 +382,8 @@ int main()
 	LoadMedia();
 
 	CreateEntities();
-
-	//SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
+	// An alternative way of rendering the screen backgound as white:
+	// SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 
 #if defined(__EMSCRIPTEN__)
 	emscripten_set_main_loop(MainLoop, -1, 1);
