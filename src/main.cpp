@@ -30,6 +30,16 @@ std::vector<MobileBanner::Entity> fixedEntities{
     MobileBanner::Entity(MobileBanner::Vector2f(0, 0, SCREENWIDTH, SCREENHEIGHT), tex_square_white_32x32),
 };
 
+float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_square_black_32x32)
+
+// baloon variables
+float x = SCREENWIDTH * 0.1; // balloon tex x
+float y = SCREENHEIGHT / 5;  // balloon tex y
+float scale = 0.25;	     // balloon rendering scale
+bool forwards = true;	     // is balloon moving tot he right?
+bool growing = true;	     // is balloon growing in size?
+bool downwards = true;	     // is balloon moving downwards?
+
 void Dispose()
 {
 	SDL_DestroyTexture(tex_square_white_32x32);
@@ -76,13 +86,20 @@ bool LoadMedia()
 		success = false;
 	}
 
+	// tex_logo_512x512
+	image = SDL_LoadBMP("resources/logo512x512.bmp");
+	tex_logo_512x512 = SDL_CreateTextureFromSurface(renderer, image);
+	if (tex_logo_512x512 == NULL)
+	{
+		printf("Failed to load texture image 3!\n");
+		success = false;
+	}
+
 	return success;
 }
 
 void CreateEntities()
 {
-	float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_square_black_32x32)
-
 	// top border entities
 	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
 	{
@@ -91,6 +108,7 @@ void CreateEntities()
 			fixedEntities.push_back(tile);
 		}
 	}
+
 	// left border entities
 	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
 	{
@@ -149,7 +167,15 @@ void RenderBorders()
 	}
 }
 
-int x = 0;
+void RenderLogo()
+{
+	float logoScale = (SCREENHEIGHT - (2.0f * defaultTileWidth)) / 512.0f;
+
+	MobileBanner::Entity yatrlogo(MobileBanner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
+	RenderEntity(yatrlogo);
+}
+
+//int x = 0;
 
 void MainLoop()
 {
@@ -160,7 +186,7 @@ void MainLoop()
 			isRunning = false;
 		}
 	}
-	x++;
+	//x++;
 	//std::cout << "looping" << x << std::endl;
 
 	WindowClear();
@@ -182,6 +208,8 @@ void MainLoop()
 	SDL_RenderCopy(renderer, tex_square_white_32x32, &src, &dst);
 
 	RenderBorders();
+
+	RenderLogo();
 
 	//Update screen
 	SDL_RenderPresent(renderer);
