@@ -1,10 +1,14 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <vector>
 
 #if defined(__EMSCRIPTEN__)
 #include <emscripten/emscripten.h>
 #endif
+
+#include "MobileBanner/Entity.hpp"
+#include "MobileBanner/Maths.hpp"
 
 const int SCREENWIDTH = 320;
 const int SCREENHEIGHT = 100;
@@ -15,7 +19,16 @@ SDL_Event event;
 SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
 SDL_Renderer *renderer = NULL;
+
+SDL_Texture *tex_advertisementballoon_512x512 = NULL;
+SDL_Texture *tex_logo_512x512 = NULL;
+SDL_Texture *tex_qrcodeballoon_512x512 = NULL;
+SDL_Texture *tex_square_black_32x32 = NULL;
 SDL_Texture *tex_square_white_32x32 = NULL;
+
+std::vector<MobileBanner::Entity> fixedEntities{
+    MobileBanner::Entity(MobileBanner::Vector2f(0, 0, SCREENWIDTH, SCREENHEIGHT), tex_square_white_32x32),
+};
 
 void Dispose()
 {
@@ -45,14 +58,69 @@ bool LoadMedia()
 {
 	bool success = true;
 
-	tex_square_white_32x32 = LoadTexture("resources/square_white_32x32.png");
+	//tex_square_white_32x32 = LoadTexture("./resources/square_white_32x32.png");
+
+	SDL_Surface *image = SDL_LoadBMP("resources/square_white_32x32.bmp");
+	tex_square_white_32x32 = SDL_CreateTextureFromSurface(renderer, image);
 	if (tex_square_white_32x32 == NULL)
 	{
-		printf("Failed to load texture image!\n");
+		printf("Failed to load texture image 1!\n");
+		success = false;
+	}
+
+	image = SDL_LoadBMP("resources/square_black_32x32.bmp");
+	tex_square_black_32x32 = SDL_CreateTextureFromSurface(renderer, image);
+	if (tex_square_black_32x32 == NULL)
+	{
+		printf("Failed to load texture image 2!\n");
 		success = false;
 	}
 
 	return success;
+}
+
+void CreateEntities()
+{
+	float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_square_black_32x32)
+
+	// top border entities
+	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	{
+		{
+			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			fixedEntities.push_back(tile);
+		}
+	}
+}
+
+void WindowClear()
+{
+	SDL_RenderClear(renderer);
+}
+
+void RenderEntity(MobileBanner::Entity &p_entity)
+{
+	SDL_Rect src;
+	src.x = p_entity.GetCurrentFrame().x;
+	src.y = p_entity.GetCurrentFrame().y;
+	src.w = p_entity.GetCurrentFrame().w;
+	src.h = p_entity.GetCurrentFrame().h;
+
+	SDL_Rect dst;
+	dst.x = p_entity.GetPos().x;
+	dst.y = p_entity.GetPos().y;
+	dst.w = p_entity.GetCurrentFrame().w * p_entity.GetPos().scale;
+	dst.h = p_entity.GetCurrentFrame().h * p_entity.GetPos().scale;
+
+	SDL_RenderCopy(renderer, p_entity.GetTex(), &src, &dst);
+}
+
+void RenderBorders()
+{
+	for (MobileBanner::Entity &entity : fixedEntities)
+	{
+		RenderEntity(entity);
+	}
 }
 
 int x = 0;
@@ -69,7 +137,7 @@ void MainLoop()
 	x++;
 	//std::cout << "looping" << x << std::endl;
 
-	SDL_RenderClear(renderer);
+	WindowClear();
 
 	//Render texture to screen
 
@@ -87,6 +155,8 @@ void MainLoop()
 
 	SDL_RenderCopy(renderer, tex_square_white_32x32, &src, &dst);
 
+	RenderBorders();
+
 	//Update screen
 	SDL_RenderPresent(renderer);
 
@@ -95,7 +165,6 @@ void MainLoop()
 
 int main()
 {
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 	}
@@ -127,6 +196,8 @@ int main()
 	}
 
 	LoadMedia();
+
+	CreateEntities();
 
 	//SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0x00, 0x00));
 
