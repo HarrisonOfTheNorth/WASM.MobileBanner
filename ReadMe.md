@@ -14,6 +14,8 @@ It was written in C++ using SDL2 and compiled using emscripten.
 
 _It also runs on the desktop as an application!_
 
+Deployment to the above link was easy, we just went `make wasm`, and that produced four files, `hello.html`, `hello.js`, `hello.wasm`, and `hello.data`, we then renamed the hello.html file to index.html, zipped them all up, and uploaded the zip file to our itch.io account!
+
 ## Setup
 
 The following is our own aide memoire to ourselves so that we can remember what we did, hopefully we will reformat it into a tutorial when we get the time.
