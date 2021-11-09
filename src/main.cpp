@@ -91,6 +91,32 @@ void CreateEntities()
 			fixedEntities.push_back(tile);
 		}
 	}
+	// left border entities
+	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	{
+		{
+			MobileBanner::Entity tile(MobileBanner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			fixedEntities.push_back(tile);
+		}
+	}
+
+	// bottom border entities
+	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	{
+		{
+			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, SCREENHEIGHT - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			fixedEntities.push_back(tile);
+		}
+	}
+
+	// right border entities
+	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	{
+		{
+			MobileBanner::Entity tile(MobileBanner::Vector2f(SCREENWIDTH - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			fixedEntities.push_back(tile);
+		}
+	}
 }
 
 void WindowClear()
