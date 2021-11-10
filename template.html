@@ -5,11 +5,20 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
+        body {
+          padding: 0px;  
+          margin: 0px;
+          overflow: hidden;
+        }
 
+        #canvas {
+            margin: 0px;
+            padding:0px;
+        }
     </style>
 </head>
 
-<body>
+<body onresize="OnResize()">
 
     <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 
@@ -17,6 +26,15 @@
         var Module = {
             canvas: (function() { return document.getElementById('canvas'); })()
         };
+
+        function OnResize() 
+        {
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            Resize = Module.cwrap('OnHostResize', 'number', ['number','number']);
+            Resize(w,h);
+        }
+          
     </script>
     
     {{{ SCRIPT }}}
