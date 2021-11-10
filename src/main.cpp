@@ -11,13 +11,16 @@
 #include "MobileBanner/Entity.hpp"
 #include "MobileBanner/Maths.hpp"
 
-const int SCREENWIDTH = 320;
-const int SCREENHEIGHT = 100;
+
+
+int screenWidth = 320;
+int screenHeight = 100;
 
 bool isRunning = true;
 SDL_Event event;
 
 SDL_Window *window = NULL;
+
 SDL_Surface *screenSurface = NULL;
 SDL_Renderer *renderer = NULL;
 
@@ -33,15 +36,16 @@ SDL_Texture *tex_youataresource_463x62 = NULL;
 SDL_Texture *tex_youataresource = NULL;
 
 std::vector<MobileBanner::Entity> fixedEntities{
-    MobileBanner::Entity(MobileBanner::Vector2f(0, 0, SCREENWIDTH, SCREENHEIGHT), tex_square_white_32x32),
+    
 };
 
 float defaultTileWidth = 16; // renders the borders at 16 instead of 32 (tex_square_black_32x32)
 
 // balloon variables
-float x = SCREENWIDTH * 0.1; // balloon tex x
-float y = SCREENHEIGHT / 5;  // balloon tex y
+float x = screenWidth * 0.1; // balloon tex x
+float y = screenHeight / 5;  // balloon tex y
 float scale = 0.25;	     // balloon rendering scale
+bool resizedScale = true; 
 bool forwards = true;	     // is balloon moving to the right?
 bool growing = true;	     // is balloon growing in size?
 bool downwards = true;	     // is balloon moving downwards?
@@ -82,7 +86,7 @@ bool LoadMedia()
 		success = false;
 	}
 
-	image = SDL_LoadBMP("resources/square_black_32x32.bmp");
+	image = SDL_LoadBMP("resources/square_yellow_32x32.bmp");
 	tex_square_black_32x32 = SDL_CreateTextureFromSurface(renderer, image);
 	if (tex_square_black_32x32 == NULL)
 	{
@@ -127,8 +131,12 @@ bool LoadMedia()
 
 void CreateEntities()
 {
+	fixedEntities.clear();
+	// White Background
+	MobileBanner::Entity background(MobileBanner::Vector2f(0, 0, screenWidth, screenHeight), tex_square_white_32x32);
+	fixedEntities.push_back(background);
 	// top border entities
-	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
 			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
@@ -137,7 +145,7 @@ void CreateEntities()
 	}
 
 	// left border entities
-	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
 			MobileBanner::Entity tile(MobileBanner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
@@ -146,19 +154,19 @@ void CreateEntities()
 	}
 
 	// bottom border entities
-	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, SCREENHEIGHT - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, screenHeight - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
 
 	// right border entities
-	for (int x = 0; x < SCREENWIDTH / defaultTileWidth; x++)
+	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(SCREENWIDTH - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			MobileBanner::Entity tile(MobileBanner::Vector2f(screenWidth - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
@@ -199,8 +207,8 @@ void RenderWhiteBackground()
 	SDL_Rect dst;
 	dst.x = 0;
 	dst.y = 0;
-	dst.w = SCREENWIDTH;
-	dst.h = SCREENHEIGHT;
+	dst.w = screenWidth;
+	dst.h = screenHeight;
 
 	SDL_RenderCopy(renderer, tex_square_white_32x32, &src, &dst);
 }
@@ -215,14 +223,16 @@ void RenderBorders()
 
 void RenderLogo()
 {
-	float logoScale = (SCREENHEIGHT - (2.0f * defaultTileWidth)) / 512.0f;
+	float logoScale = (screenHeight - (2.0f * defaultTileWidth)) / 512.0f;
 
 	MobileBanner::Entity yatrlogo(MobileBanner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
 	RenderEntity(yatrlogo);
 
-	// ToDo: although the logo above scales, if the screen dimensions change, this rendered image does not. Fix it!
-	MobileBanner::Entity text(MobileBanner::Vector2f(SCREENWIDTH / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
-	RenderEntity(text);
+	if(screenWidth < 321.0f && screenHeight < 101.0f)
+	{
+		MobileBanner::Entity text(MobileBanner::Vector2f(screenWidth / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
+		RenderEntity(text);
+	}
 }
 
 void RenderText()
@@ -259,7 +269,7 @@ void RenderBalloon()
 	{
 		MobileBanner::Entity red(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
 		MobileBanner::Entity blue(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
-		if (x > SCREENWIDTH / 3)
+		if (x > screenWidth / 3)
 		{
 			RenderEntity(red);
 		}
@@ -272,47 +282,112 @@ void RenderBalloon()
 
 void UpdateBalloonAnimationValues()
 {
-	if (forwards)
+	float scaleMinimum = 0.0f;
+	float scaleMaximum = 0.0f;
+	float xForwards = 0.0f;
+	float forwardsLeft = 0.0f;
+	float forwardsRight = 0.0f;
+	float yDownwards = 0.0f;
+	float downwardsTop = 0.0f;
+	float downwardsBottom = 0.0f;
+	float scaleGrowing = 0.0f;
+
+	if(screenWidth < 400)
 	{
-		x += 0.4f;
+		if(!resizedScale) scale = 0.2f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
+		scaleMinimum = 0.1f;
+		scaleMaximum = 0.5f;
+		xForwards = 0.4f;
+		forwardsLeft = 0.0f;
+		forwardsRight = 1.0;
+		yDownwards = 0.4f;
+		downwardsTop = 0.00f;
+		downwardsBottom = 1.0f;
+		scaleGrowing = 0.002f;
+	}
+	else if(screenWidth < 800)
+	{
+		if(!resizedScale) scale = 0.4f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
+		scaleMinimum = 0.3f;
+		scaleMaximum = 1.0f;
+		xForwards = 0.6f;
+		forwardsLeft = 0.0f;
+		forwardsRight = 1.0;
+		yDownwards = 0.6f;
+		downwardsTop = 0.0f;
+		downwardsBottom = 1.0f;
+		scaleGrowing = 0.002f;
+	}
+	else if(screenWidth < 1200)
+	{
+		if(!resizedScale) scale = 0.8f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
+		scaleMinimum = 0.7f;
+		scaleMaximum = 1.5f;
+		xForwards = 0.8f;
+		forwardsLeft = 0.0f;
+		forwardsRight = 0.9f;
+		yDownwards = 0.8f;
+		downwardsTop = 0.0f;
+		downwardsBottom = 0.8f;
+		scaleGrowing = 0.002f;
 	}
 	else
 	{
-		x -= 0.4f;
+		if(!resizedScale) scale = 0.8f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
+		scaleMinimum = 0.7f;
+		scaleMaximum = 1.5f;
+		xForwards = 1.0f;
+		forwardsLeft = 0.0f;
+		forwardsRight = 0.9f;
+		yDownwards = 1.0f;
+		downwardsTop = 0.0f;
+		downwardsBottom = 0.8f;
+		scaleGrowing = 0.002f;
+	}
+
+	if (forwards)
+	{
+		x += xForwards;
+	}
+	else
+	{
+		x -= xForwards;
 	}
 
 	if (downwards)
 	{
-		y += 0.4f;
+		y += yDownwards;
 	}
 	else
 	{
-		y -= 0.4f;
+		y -= yDownwards;
 	}
 
 	if (growing)
 	{
-		scale += 0.002;
+		scale += scaleGrowing;
 	}
 	else
 	{
-		scale -= 0.002;
+		scale -= scaleGrowing;
 	}
 
-	if (x > SCREENWIDTH * 0.9 || x < -(SCREENHEIGHT * 0.4))
+	if (x < (screenWidth * forwardsLeft) || x > (screenWidth * forwardsRight))
 	{
 		forwards = !forwards;
 	}
 
-	if (y > SCREENHEIGHT * 0.6 || y < -(SCREENHEIGHT * 1))
+	if (y < (screenHeight * downwardsTop) || y > (screenHeight * downwardsBottom))
 	{
 		downwards = !downwards;
 	}
 
-	if (scale > 0.5 || scale < 0.1) // 0.0125
+	if (scale < scaleMinimum || scale > scaleMaximum)
 	{
 		growing = !growing;
 	}
+
+	std::cout << screenWidth << ", " << screenHeight <<  ", x: " << x << ", y: " << y << ", forwardsLeft: " << (screenWidth * forwardsLeft) << ", forwardsRight: " << (screenWidth * forwardsRight) << ", downwardsTop: " << (screenHeight * downwardsTop) << ", downwardsBottom: " << (screenHeight * downwardsBottom) << std::endl; 
 }
 
 void MainLoop()
@@ -345,21 +420,15 @@ void MainLoop()
 	SDL_UpdateWindowSurface(window);
 }
 
-int main()
+void Initialize(int width, int height)
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-	{
-	}
-
-	TTF_Init();
-
 	window = SDL_CreateWindow(
 	    "Mobile Banner 320x100",
 	    SDL_WINDOWPOS_UNDEFINED,
 	    SDL_WINDOWPOS_UNDEFINED,
-	    SCREENWIDTH,
-	    SCREENHEIGHT,
-	    SDL_WINDOW_SHOWN);
+	    width,
+	    height,
+	    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 	if (window == NULL)
 	{
@@ -378,6 +447,31 @@ int main()
 	if (renderer == NULL)
 	{
 	}
+}
+
+extern "C"
+{
+	EMSCRIPTEN_KEEPALIVE void OnHostResize(int width, int height)
+	{
+		std::cout << "Resizing ..." << width << ", " << height << std::endl;
+
+		screenWidth = width;
+		screenHeight = height;
+		SDL_SetWindowSize(window, width, height);
+		resizedScale = false; // force re-scale)
+		CreateEntities();
+	}
+}
+
+EMSCRIPTEN_KEEPALIVE int main()
+{
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	{
+	}
+
+	TTF_Init();
+
+	Initialize(screenWidth, screenHeight);
 
 	LoadMedia();
 
