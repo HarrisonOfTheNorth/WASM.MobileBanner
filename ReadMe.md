@@ -160,6 +160,8 @@ The bottom three, however, you will use, the first of them to install tree, if y
 - https://www.youtube.com/watch?v=KsG6dJlLBDw&list=PL2RPjWnJduNmXHRYwdtublIPdlqocBoLS
 - https://www.youtube.com/watch?v=Dyz9O7s7B8w&t=983s
 - https://www.youtube.com/watch?v=VeyMi337AwA&t=96s
+- Cmake https://www.youtube.com/watch?v=nlKcXPUJGwA&list=PLalVdRk2RC6o5GHu618ARWh0VO0bFlif4
+- Advanced Makefile https://www.youtube.com/watch?v=_r7i5X0rXJk
 
 Notes.
 
