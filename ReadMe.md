@@ -1,10 +1,11 @@
 # WASM
 
-```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
+`Patterns for creating WASM in a single HTML snippet, using SDL2 and C++`
 
 See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
 
 - Also, for those wishing to contribute a Pull-Request, please see the community request at https://stackoverflow.com/questions/69918876/patterns-for-creating-wasm-in-a-single-html-snippet-using-sdl2-and-c
+- We have created three platform ReadMe stubs to cater for community pull-requests (see the tree below).
 
 ## Introduction
 
@@ -20,10 +21,10 @@ _It also runs on the desktop as an application!_
 
 Deployment to the above link was easy, we just went `make wasm`, and that produced four files, `hello.html`, `hello.js`, `hello.wasm`, and `hello.data`, we then renamed the hello.html file to index.html, zipped them all up, and uploaded the zip file to our itch.io account!
 
-- we are on the pathway of formalising ```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
+- we are on the pathway of formalising `Patterns for creating WASM in a single HTML snippet, using SDL2 and C++`
 - to get there, please see the StackOverflow link, above
 - we are trying to create a simple set of rules for creating WASM Banner Advertisements, using SDL2 and C++, in all of the standard industry sizes that are outlined at https://www.match2one.com/blog/standard-banner-sizes/
-- That link refers to the industry standards for banner advertising, vis-a-vis "[The Interactive Advertising Bureau (IAB)](https://www.iab.com/guidelines/iab-new-ad-portfolio/) has created standardized guidelines on banner sizes, which work across all advertising networks, including the Google Display Network (GDN)". You do have to create a free account to get access to their abundant range of banner specifications in PDF, but not only is it scintillating reading, once we get WASM-div patterns sorted out, we'll create a SDK for each of the standard sizes. 
+- That link refers to the industry standards for banner advertising, vis-a-vis "[The Interactive Advertising Bureau (IAB)](https://www.iab.com/guidelines/iab-new-ad-portfolio/) has created standardized guidelines on banner sizes, which work across all advertising networks, including the Google Display Network (GDN)". You do have to create a free account to get access to their abundant range of banner specifications in PDF, but not only is it scintillating reading, once we get WASM-div patterns sorted out, we'll create a SDK for each of the standard sizes.
 - The IAB documents are quite significant because they also specify Banner Ad 'K-Weight' (kilobyte size) for each standard banner size, and although they are difficult to achieve using WASM, we suspect that the advent of 5G will afford some flexibilty on this, as well as giving us some optimisation targets.
 
 ## Setup
@@ -60,9 +61,21 @@ Depending upon your symlinks, it should look something like the following:
 ```
 .
 ├── Makefile
+├── Platforms
+│   ├── Linux
+│   │   └── ReadMe.md
+│   ├── MacOS
+│   │   └── ReadMe.md
+│   └── Windows
+│       └── ReadMe.md
 ├── ReadMe.md
 ├── build
 │   └── debug
+│       ├── index.data
+│       ├── index.html
+│       ├── index.js
+│       ├── index.wasm
+│       └── index.yatrt
 ├── include
 │   ├── MobileBanner
 │   │   ├── Entity.hpp
@@ -85,6 +98,8 @@ Depending upon your symlinks, it should look something like the following:
 │   ├── square_black_32x32.png
 │   ├── square_white_32x32.bmp
 │   ├── square_white_32x32.png
+│   ├── square_yellow_32x32.bmp
+│   ├── square_yellow_32x32.png
 │   ├── youataresource463x62.bmp
 │   └── youataresource463x62.png
 ├── src
