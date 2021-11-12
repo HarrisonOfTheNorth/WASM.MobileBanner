@@ -11,7 +11,7 @@ See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
 
 We wanted to animate some webpage banners, similar to how we used to do it in Flash, which is no longer supported.
 
-The solution, of course, is WASM - WebAssembly - which is supported by all the major browsers.
+The solution, of course, is WASM - WebAssembly - which is not just supported by all the major browsers, but by iOS and Android mobile-app browsers.
 
 This repo is a work in progress, however you can see it working at the above link.
 
