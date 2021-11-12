@@ -1,6 +1,10 @@
 # WASM
 
+```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
+
 See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
+
+- Also, for those wishing to contribute a Pull-Request, please see the community request at https://stackoverflow.com/questions/69918876/patterns-for-creating-wasm-in-a-single-html-snippet-using-sdl2-and-c
 
 ## Introduction
 
@@ -16,11 +20,17 @@ _It also runs on the desktop as an application!_
 
 Deployment to the above link was easy, we just went `make wasm`, and that produced four files, `hello.html`, `hello.js`, `hello.wasm`, and `hello.data`, we then renamed the hello.html file to index.html, zipped them all up, and uploaded the zip file to our itch.io account!
 
+- we are on the pathway of formalising ```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
+- to get there, please see the StackOverflow link, above
+- we are trying to create a simple set of rules for creating WASM Banner Advertisements, using SDL2 and C++, in all of the standard industry sizes that are outlined at https://www.match2one.com/blog/standard-banner-sizes/
+- That link refers to the industry standards for banner advertising, vis-a-vis "[The Interactive Advertising Bureau (IAB)](https://www.iab.com/guidelines/iab-new-ad-portfolio/) has created standardized guidelines on banner sizes, which work across all advertising networks, including the Google Display Network (GDN)". You do have to create a free account to get access to their abundant range of banner specifications in PDF, but not only is it scintillating reading, once we get WASM-div patterns sorted out, we'll create a SDK for each of the standard sizes. 
+- The IAB documents are quite significant because they also specify Banner Ad 'K-Weight' (kilobyte size) for each standard banner size, and although they are difficult to achieve using WASM, we suspect that the advent of 5G will afford some flexibilty on this, as well as giving us some optimisation targets.
+
 ## Setup
 
 The following is our own aide memoire to ourselves so that we can remember what we did, hopefully we will reformat it into a tutorial when we get the time.
 
-You'll notice in the resources folder that there are both .bmp files and .png files. The reason for this is that the library setup for .png files for SDL2 can be tricky, yet BMPs run out of the box.
+You'll notice in the resources folder that there are both .bmp files and .png files. The reason for this is that the library setup for .png files for SDL2 can be tricky, yet BMPs run out of the box. There's a note about this at the bottom of this page.
 
 Similarly, you will see that the load font method is commented out - although we could compile them for an app, we couldn't get the compiler paths right for the WASM build, so we just loaded the text as an image instead. Yup, a pretty good hack for the moment.
 
@@ -28,7 +38,11 @@ Hopefully there are enough tips below to get a running start!
 
 ## Platform
 
-The following setup is for MacOS, which we use for outputting to Mac, iOS, and Android. As WASM is platform independant, WASM produced on MacOS is also suitable for Windows deployments. We don't currently have any guides for building SDL2 and creating WASM from it, using Windows.
+The following setup is for MacOS, which we use for outputting to Mac, iOS, and Android. As WASM is platform independant, WASM produced on MacOS is also suitable for Windows and Linux deployments. We don't currently have any guides for building SDL2 and creating WASM from it, using Linux and Windows, and we welcome any contributions to assist this. The endpoint goal is an Open-Source SDK that caters for MacOS, Linux, and Windows, catering for all the banner ad sizes specified by the IAB (see above).
+
+### Important Platform Note
+
+- If you have missed the subtlety, one of the IAB standard banner ad sizes is full page - so this is the pathway towards creating full-blown WASM applications in a WASM-div snippet! We're starting at 320 x 100, fleshing it out, accomodating all of the other IAB sizes, then going for multiple WASM-divs in a single HTML page where each can talk to each other, with the capability of each size (no matter how small or big) being capable of transforming to full-screen, as well as being reactive to the platform that they are rendered on, Desktop or Mobile.
 
 ## Makefile Aide Memoire
 
@@ -78,6 +92,8 @@ Depending upon your symlinks, it should look something like the following:
 │   └── main.cpp
 └── template.html
 ```
+
+Please see the note at the bottom, outlining why .png files are temporarily duplicated as .bmp files.
 
 ## Command Lines Aide Memoire
 
@@ -167,4 +183,4 @@ The bottom three, however, you will use, the first of them to install tree, if y
 
 Notes.
 
-WASM? --use-preload-plugins
+I'd agree that the tree for the reources dirctory looks awkward, the reason for both .bmp and .png files is because we have had difficulty getting .png images to run both as an app and as wasm. This has something to do with Emscripten having it's own SDL2 support, so although we've generally got the command line right for g++, we're not doing so well with the separate em++ command line. So as an app, we are finding it quite easy, but as wasm - well not at all so far, but at least our hack produces the same visual rendering in both the app and wasm demos. So after a day of tinkering with include and lib paths for the .png assets in WASM mode, I fell back into MVP mode and added the .bmp files as a fall-back. A full solution will resolve this and incorporate the .png files, which is why both are there.
