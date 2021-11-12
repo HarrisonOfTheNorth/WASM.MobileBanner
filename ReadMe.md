@@ -22,6 +22,7 @@ Deployment to the above link was easy, we just went `make wasm`, and that produc
 
 - we are on the pathway of formalising ```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
 - to get there, please see the StackOverflow link, above
+- we are trying to create a simple set of rules for creating WASM Banner Advertisements, using SDL2 and C++, in all of the standard industry sizes that are outlined at https://www.match2one.com/blog/standard-banner-sizes/
 
 ## Setup
 
