@@ -65,19 +65,17 @@ Depending upon your symlinks, it should look something like the following:
 ├── Makefile
 ├── Platforms
 │   ├── Linux
+│   │   ├── Makefile
 │   │   └── ReadMe.md
 │   ├── MacOS
+│   │   ├── Makefile
 │   │   └── ReadMe.md
 │   └── Windows
+│       ├── Makefile
 │       └── ReadMe.md
 ├── ReadMe.md
 ├── build
 │   └── debug
-│       ├── index.data
-│       ├── index.html
-│       ├── index.js
-│       ├── index.wasm
-│       └── index.yatrt
 ├── include
 │   ├── MobileBanner
 │   │   ├── Entity.hpp
@@ -86,7 +84,6 @@ Depending upon your symlinks, it should look something like the following:
 │   ├── SDL_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2
 │   └── SDL_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/include/SDL2
 ├── lib
-│   ├── SDL2_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/lib
 │   └── SDL2_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/lib
 ├── resources
 │   ├── Roboto-Bold.ttf
