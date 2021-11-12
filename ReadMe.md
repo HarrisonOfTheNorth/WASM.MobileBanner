@@ -29,7 +29,9 @@ Deployment to the above link was easy, we just went `make wasm`, and that produc
 
 ## Setup
 
-The following is our own aide memoire to ourselves so that we can remember what we did, hopefully we will reformat it into a tutorial when we get the time.
+The following is our own MacOS aide memoire to ourselves so that we can remember what we did, we have, however, created three platform ReadMes in the Platforms folder.
+
+- At the moment we need community Pull-Requests for the Linux and Windows ReadMe files and Makefiles.
 
 You'll notice in the resources folder that there are both .bmp files and .png files. The reason for this is that the library setup for .png files for SDL2 can be tricky, yet BMPs run out of the box. There's a note about this at the bottom of this page.
 
