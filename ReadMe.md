@@ -40,6 +40,8 @@ Hopefully there are enough tips below to get a running start!
 
 The following setup is for MacOS, which we use for outputting to Mac, iOS, and Android. As WASM is platform independant, WASM produced on MacOS is also suitable for Windows and Linux deployments. We don't currently have any guides for building SDL2 and creating WASM from it, using Linux and Windows, and we welcome any contributions to assist this. The endpoint goal is an Open-Source SDK that caters for MacOS, Linux, and Windows, catering for all the banner ad sizes specified by the IAB (see above).
 
+### Important Platform Note
+
 - If you have missed the subtlety, one of the IAB standard banner ad sizes is full page - so this is the pathway towards creating full-blown WASM applications in a WASM-div snippet! We're starting at 320 x 100, fleshing it out, accomodating all of the other IAB sizes, then going for multiple WASM-divs in a single HTML page where each can talk to each other, with the capability of each size (no matter how small or big) being capable of transforming to full-screen, as well as being reactive to the platform that they are rendered on, Desktop or Mobile.
 
 ## Makefile Aide Memoire
