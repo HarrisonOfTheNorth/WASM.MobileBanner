@@ -165,4 +165,4 @@ The bottom three, however, you will use, the first of them to install tree, if y
 
 Notes.
 
-WASM? --use-preload-plugins
+I'd agree that the tree for the reources dirctory looks awkward, the reason for both .bmp and .png files is because we have had difficulty getting .png images to run both as an app and as wasm. As an app was easy, as wasm, well not at all so far. After a day of tinkering with include and lib paths for the .png assets in WASM mode, I fell back into MVP mode and added the .bmp iles as a fall-back. A full solution will resolve this and incorporate the .png files, which is why both are there.
