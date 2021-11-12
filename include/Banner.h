@@ -1,8 +1,23 @@
+#pragma region license
+/*
+	MIT License
+*/
+#pragma endregion
+
+#pragma region version_history
+/*
+	0.0.1: Moved classes to Banner.h, renamed namespace from MobileBanner to Banner.
+
+*/
+#pragma endregion
+
 #pragma once
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <iostream>
 
-namespace MobileBanner
+namespace Banner
 {
 	// A struct that represents an object's x, y, w, h, and scale. Defaults to 0.0f, 0.0f, 32.0f, 32.0f, and 1, respectively, unless overloaded.
 	struct Vector2f
@@ -55,5 +70,50 @@ namespace MobileBanner
 
 		float x, y, w, h, scale;
 	};
+
+}
+
+namespace Banner
+{
+	// An item that is rendered as an SDL_Texture
+	class Entity
+	{
+	public:
+		Entity(Vector2f p_pos, SDL_Texture *p_tex);
+		Vector2f &GetPos()
+		{
+			return pos;
+		}
+		SDL_Texture *GetTex();
+		SDL_Rect GetCurrentFrame();
+
+	private:
+		Vector2f pos;
+		SDL_Rect currentFrame;
+		SDL_Texture *tex;
+	};
+
+}
+
+namespace Banner
+{
+	Entity::Entity(Vector2f p_pos, SDL_Texture *p_tex)
+	    : pos(p_pos), tex(p_tex)
+	{
+		currentFrame.x = 0;
+		currentFrame.y = 0;
+		currentFrame.w = p_pos.w;
+		currentFrame.h = p_pos.h;
+	}
+
+	SDL_Texture *Entity::GetTex()
+	{
+		return tex;
+	}
+
+	SDL_Rect Entity::GetCurrentFrame()
+	{
+		return currentFrame;
+	}
 
 }

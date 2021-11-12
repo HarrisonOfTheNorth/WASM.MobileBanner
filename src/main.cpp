@@ -8,9 +8,7 @@
 #include <emscripten/emscripten.h>
 #endif
 
-#include "MobileBanner/Entity.hpp"
-#include "MobileBanner/Maths.hpp"
-
+#include "Banner.h"
 
 
 int screenWidth = 320;
@@ -35,7 +33,7 @@ SDL_Texture *tex_youataresource_463x62 = NULL;
 // text textures
 SDL_Texture *tex_youataresource = NULL;
 
-std::vector<MobileBanner::Entity> fixedEntities{
+std::vector<Banner::Entity> fixedEntities{
     
 };
 
@@ -133,13 +131,13 @@ void CreateEntities()
 {
 	fixedEntities.clear();
 	// White Background
-	MobileBanner::Entity background(MobileBanner::Vector2f(0, 0, screenWidth, screenHeight), tex_square_white_32x32);
+	Banner::Entity background(Banner::Vector2f(0, 0, screenWidth, screenHeight), tex_square_white_32x32);
 	fixedEntities.push_back(background);
 	// top border entities
 	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
@@ -148,7 +146,7 @@ void CreateEntities()
 	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			Banner::Entity tile(Banner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
@@ -157,7 +155,7 @@ void CreateEntities()
 	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(x * defaultTileWidth, screenHeight - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, screenHeight - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
@@ -166,7 +164,7 @@ void CreateEntities()
 	for (int x = 0; x < screenWidth / defaultTileWidth; x++)
 	{
 		{
-			MobileBanner::Entity tile(MobileBanner::Vector2f(screenWidth - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+			Banner::Entity tile(Banner::Vector2f(screenWidth - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
 			fixedEntities.push_back(tile);
 		}
 	}
@@ -177,7 +175,7 @@ void WindowClear()
 	SDL_RenderClear(renderer);
 }
 
-void RenderEntity(MobileBanner::Entity &p_entity)
+void RenderEntity(Banner::Entity &p_entity)
 {
 	SDL_Rect src;
 	src.x = p_entity.GetCurrentFrame().x;
@@ -215,7 +213,7 @@ void RenderWhiteBackground()
 
 void RenderBorders()
 {
-	for (MobileBanner::Entity &entity : fixedEntities)
+	for (Banner::Entity &entity : fixedEntities)
 	{
 		RenderEntity(entity);
 	}
@@ -225,12 +223,12 @@ void RenderLogo()
 {
 	float logoScale = (screenHeight - (2.0f * defaultTileWidth)) / 512.0f;
 
-	MobileBanner::Entity yatrlogo(MobileBanner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
+	Banner::Entity yatrlogo(Banner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
 	RenderEntity(yatrlogo);
 
 	if(screenWidth < 321.0f && screenHeight < 101.0f)
 	{
-		MobileBanner::Entity text(MobileBanner::Vector2f(screenWidth / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
+		Banner::Entity text(Banner::Vector2f(screenWidth / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
 		RenderEntity(text);
 	}
 }
@@ -267,8 +265,8 @@ void RenderText()
 void RenderBalloon()
 {
 	{
-		MobileBanner::Entity red(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
-		MobileBanner::Entity blue(MobileBanner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
+		Banner::Entity red(Banner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
+		Banner::Entity blue(Banner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
 		if (x > screenWidth / 3)
 		{
 			RenderEntity(red);
@@ -387,7 +385,7 @@ void UpdateBalloonAnimationValues()
 		growing = !growing;
 	}
 
-	std::cout << screenWidth << ", " << screenHeight <<  ", x: " << x << ", y: " << y << ", forwardsLeft: " << (screenWidth * forwardsLeft) << ", forwardsRight: " << (screenWidth * forwardsRight) << ", downwardsTop: " << (screenHeight * downwardsTop) << ", downwardsBottom: " << (screenHeight * downwardsBottom) << std::endl; 
+	// std::cout << screenWidth << ", " << screenHeight <<  ", x: " << x << ", y: " << y << ", forwardsLeft: " << (screenWidth * forwardsLeft) << ", forwardsRight: " << (screenWidth * forwardsRight) << ", downwardsTop: " << (screenHeight * downwardsTop) << ", downwardsBottom: " << (screenHeight * downwardsBottom) << std::endl; 
 }
 
 void MainLoop()
@@ -451,7 +449,10 @@ void Initialize(int width, int height)
 
 extern "C"
 {
-	EMSCRIPTEN_KEEPALIVE void OnHostResize(int width, int height)
+	#if defined(__EMSCRIPTEN__)
+		EMSCRIPTEN_KEEPALIVE 
+	#endif
+	void OnHostResize(int width, int height)
 	{
 		std::cout << "Resizing ..." << width << ", " << height << std::endl;
 
@@ -463,7 +464,10 @@ extern "C"
 	}
 }
 
-EMSCRIPTEN_KEEPALIVE int main()
+#if defined(__EMSCRIPTEN__)
+		EMSCRIPTEN_KEEPALIVE 
+#endif
+int main()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
