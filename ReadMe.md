@@ -2,6 +2,8 @@
 
 See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
 
+- Also, for those wishing to contribute a Pull-Request, please see the community request at https://stackoverflow.com/questions/69918876/patterns-for-creating-wasm-in-a-single-html-snippet-using-sdl2-and-c
+
 ## Introduction
 
 We wanted to animate some webpage banners, similar to how we used to do it in Flash, which is no longer supported.
