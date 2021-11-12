@@ -60,6 +60,7 @@ Depending upon your symlinks, it should look something like the following:
 
 ```
 .
+├── Makefile
 ├── Platforms
 │   ├── Linux
 │   │   └── ReadMe.md
@@ -67,46 +68,44 @@ Depending upon your symlinks, it should look something like the following:
 │   │   └── ReadMe.md
 │   └── Windows
 │       └── ReadMe.md
-└── WASM.MobileBanner
-    ├── Makefile
-    ├── ReadMe.md
-    ├── build
-    │   └── debug
-    │       ├── index.data
-    │       ├── index.html
-    │       ├── index.js
-    │       ├── index.wasm
-    │       └── index.yatrt
-    ├── include
-    │   ├── MobileBanner
-    │   │   ├── Entity.hpp
-    │   │   └── Maths.hpp
-    │   ├── SDL2 -> /opt/homebrew/Cellar/sdl2/2.0.16/include/SDL2
-    │   ├── SDL_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2
-    │   └── SDL_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/include/SDL2
-    ├── lib
-    │   ├── SDL2_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/lib
-    │   └── SDL2_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/lib
-    ├── resources
-    │   ├── Roboto-Bold.ttf
-    │   ├── advertisementballoon512x512.bmp
-    │   ├── advertisementballoon512x512.png
-    │   ├── logo512x512.bmp
-    │   ├── logo512x512.png
-    │   ├── qrcodeballoon512x512.bmp
-    │   ├── qrcodeballoon512x512.png
-    │   ├── square_black_32x32.bmp
-    │   ├── square_black_32x32.png
-    │   ├── square_white_32x32.bmp
-    │   ├── square_white_32x32.png
-    │   ├── square_yellow_32x32.bmp
-    │   ├── square_yellow_32x32.png
-    │   ├── youataresource463x62.bmp
-    │   └── youataresource463x62.png
-    ├── src
-    │   ├── Entity.cpp
-    │   └── main.cpp
-    └── template.html
+├── ReadMe.md
+├── build
+│   └── debug
+│       ├── index.data
+│       ├── index.html
+│       ├── index.js
+│       ├── index.wasm
+│       └── index.yatrt
+├── include
+│   ├── MobileBanner
+│   │   ├── Entity.hpp
+│   │   └── Maths.hpp
+│   ├── SDL2 -> /opt/homebrew/Cellar/sdl2/2.0.16/include/SDL2
+│   ├── SDL_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2
+│   └── SDL_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/include/SDL2
+├── lib
+│   ├── SDL2_image -> /opt/homebrew/Cellar/sdl2_image/2.0.5/lib
+│   └── SDL2_ttf -> /opt/homebrew/Cellar/sdl2_ttf/2.0.15/lib
+├── resources
+│   ├── Roboto-Bold.ttf
+│   ├── advertisementballoon512x512.bmp
+│   ├── advertisementballoon512x512.png
+│   ├── logo512x512.bmp
+│   ├── logo512x512.png
+│   ├── qrcodeballoon512x512.bmp
+│   ├── qrcodeballoon512x512.png
+│   ├── square_black_32x32.bmp
+│   ├── square_black_32x32.png
+│   ├── square_white_32x32.bmp
+│   ├── square_white_32x32.png
+│   ├── square_yellow_32x32.bmp
+│   ├── square_yellow_32x32.png
+│   ├── youataresource463x62.bmp
+│   └── youataresource463x62.png
+├── src
+│   ├── Entity.cpp
+│   └── main.cpp
+└── template.html
 ```
 
 Please see the note at the bottom, outlining why .png files are temporarily duplicated as .bmp files.
