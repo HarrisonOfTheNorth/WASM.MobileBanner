@@ -17,7 +17,7 @@ WASM_COMPILERFLAGS = -std=c++17 -O3 -s WASM=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s
 WASM_LINKERFLAGS = -lsdl2 -lsdl2_image -lz  #-lpng16
 WASM_PRELOAD = --preload-file ./resources 
 WASM_SHELLFILETEMPLATE = --shell-file template.html
-WASM_OUTPUT = -o $(BUILD_DIR)/hello.html
+WASM_OUTPUT = -o $(BUILD_DIR)/index.html
 
 app:
 	rm -rf $(BUILD_DIR)/*.js

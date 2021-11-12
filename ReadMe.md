@@ -137,6 +137,7 @@ The bottom three, however, you will use, the first of them to install tree, if y
 - Upgrade: `brew upgrade sdl2_image`
 - Locate the include folder: Best bet is doing a reinstall and finding the path from the output.
 - Tree: run `tree` to see if it is linked to in the current folder.
+- include Symlink example: `ln -s /opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2 include/SDL_image`
 
 ### SDL2
 
@@ -147,6 +148,7 @@ The bottom three, however, you will use, the first of them to install tree, if y
 - Upgrade: `brew upgrade sdl2`
 - Locate the include folder: Best bet is doing a reinstall and finding the path from the output.
 - Tree: run `tree` to see if it is linked to in the current folder.
+- include Symlink example: `ln -s /opt/homebrew/Cellar/sdl2/2.0.16/include/SDL2 include/SDL2`
 
 ### SDL_tff
 
