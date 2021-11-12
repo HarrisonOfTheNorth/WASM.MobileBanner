@@ -23,6 +23,7 @@ Deployment to the above link was easy, we just went `make wasm`, and that produc
 - we are on the pathway of formalising ```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
 - to get there, please see the StackOverflow link, above
 - we are trying to create a simple set of rules for creating WASM Banner Advertisements, using SDL2 and C++, in all of the standard industry sizes that are outlined at https://www.match2one.com/blog/standard-banner-sizes/
+- That link refers to the industry standards for banner advertising, vis-a-vis "[The Interactive Advertising Bureau (IAB)](https://www.iab.com/guidelines/iab-new-ad-portfolio/) has created standardized guidelines on banner sizes, which work across all advertising networks, including the Google Display Network (GDN)". You do have to create a free account to get access to their abundant range of banner specifications in PDF, but not only is it scintillating reading, once we get WASM-div patterns sorted out, we'll create a SDK for each of the standard sizes. 
 
 ## Setup
 
