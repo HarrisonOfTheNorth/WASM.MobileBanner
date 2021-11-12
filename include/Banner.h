@@ -17,6 +17,7 @@
 
 #include <iostream>
 
+#pragma region Vector2f_Declaration
 namespace Banner
 {
 	// A struct that represents an object's x, y, w, h, and scale. Defaults to 0.0f, 0.0f, 32.0f, 32.0f, and 1, respectively, unless overloaded.
@@ -72,7 +73,10 @@ namespace Banner
 	};
 
 }
+#pragma endregion 
 
+
+#pragma region Entity_Declaration
 namespace Banner
 {
 	// An item that is rendered as an SDL_Texture
@@ -94,7 +98,9 @@ namespace Banner
 	};
 
 }
+#pragma endregion
 
+#pragma region Entity_Implementation
 namespace Banner
 {
 	Entity::Entity(Vector2f p_pos, SDL_Texture *p_tex)
@@ -117,3 +123,4 @@ namespace Banner
 	}
 
 }
+#pragma endregion
