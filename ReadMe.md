@@ -21,6 +21,7 @@ _It also runs on the desktop as an application!_
 Deployment to the above link was easy, we just went `make wasm`, and that produced four files, `hello.html`, `hello.js`, `hello.wasm`, and `hello.data`, we then renamed the hello.html file to index.html, zipped them all up, and uploaded the zip file to our itch.io account!
 
 - we are on the pathway of formalising ```Patterns for creating WASM in a single HTML snippet, using SDL2 and C++```
+- to get there, please see the StackOverflow link, above
 
 ## Setup
 
