@@ -11,7 +11,7 @@ See this WASM Demo running in the browser https://yatter.itch.io/sdl2wasm
 
 We wanted to animate some webpage banners, similar to how we used to do it in Flash, which is no longer supported.
 
-The solution, of course, is WASM - WebAssembly - which is supported by all the major browsers.
+The solution, of course, is WASM - WebAssembly - which is not just supported by all the major browsers, but by iOS and Android mobile-app browsers.
 
 This repo is a work in progress, however you can see it working at the above link.
 
@@ -42,6 +42,8 @@ Hopefully there are enough tips below to get a running start!
 ## Platform
 
 The following setup is for MacOS, which we use for outputting to Mac, iOS, and Android. As WASM is platform independant, WASM produced on MacOS is also suitable for Windows and Linux deployments. We don't currently have any guides for building SDL2 and creating WASM from it, using Linux and Windows, and we welcome any contributions to assist this. The endpoint goal is an Open-Source SDK that caters for MacOS, Linux, and Windows, catering for all the banner ad sizes specified by the IAB (see above).
+
+- Contributors are sought for the ReadMe and Makefiles in the Platform folders.
 
 ### Important Platform Note
 
