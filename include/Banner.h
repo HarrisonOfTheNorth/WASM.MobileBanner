@@ -11,8 +11,10 @@
 
 Trademarks
 
-y@R and You-At-A-Service are trademarks of Count Anthony Harrison, 
-operating out of Cumberland in the UK
+y@R and You-At-A-Resource are trademarks of Count Anthony Harrison, 
+operating out of Cumberland in the UK.
+
+y@R is pronounced Yatter.
 
 MIT License
 
@@ -66,14 +68,17 @@ SOFTWARE.
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL_ttf.h>
 
 #include <iostream>
+#include <map>
+#include <stdio.h>
 
 #if defined(__EMSCRIPTEN__)
 #include <emscripten/emscripten.h>
 #endif
 
-#pragma region 
+#pragma region Window flags
 
 // A copy of the SDL_ version, but without the prefix - the advantage being 
 // that you don't need to include the SDL references in main.cpp unless
@@ -116,11 +121,26 @@ typedef enum
 	Banner.h
 	+-------------------------------------------------------------+
 	|                      y@R BannerEngine                       |
-	|  Vector2f Declaration                                       |
+	|  Struct and Enum Declarations                               |
 	+-------------------------------------------------------------+
 */
 namespace Banner
 {
+	// Return Code enumeration
+	enum ReturnCode { FAIL = 0, OK = 1 };
+
+	// A struct that identifies a SDL_Texture by key.
+	struct Texture
+	{
+		Texture(std::string *key, SDL_Texture *texture)
+		{
+			k = key;
+			t = texture;
+		}
+
+		std::string * k; SDL_Texture * t;
+	};
+
 	// A struct that represents an object's x, y, w, h, and scale. Defaults to 0.0f, 0.0f, 32.0f, 32.0f, and 1, respectively, unless overloaded.
 	struct Vector2f
 	{
@@ -191,7 +211,7 @@ namespace Banner
 	class Entity
 	{
 	public:
-		Entity(Vector2f p_pos, SDL_Texture *p_tex);
+		Entity(Vector2f p_pos, Texture *p_tex);
 		Vector2f &GetPos()
 		{
 			return pos;
@@ -219,8 +239,6 @@ namespace Banner
 
 namespace Banner
 {
-	enum ReturnCode { FAIL = 0, OK = 1 };
-
 	// The BannerEngine itself, which your banner must inherit
 	class BannerEngine
 	{
@@ -245,6 +263,10 @@ namespace Banner
 		public: // cancellation
 			void SetIsRunning(bool app_isRunning);
 			bool GetIsRunning();
+
+		public:
+			Banner::ReturnCode LoadTexture(std::string key,char * filepath);
+			std::map<std::string, Texture> GetTextures();
 			
 		public: // entities
 			void SetFixedEntities(std::vector<Banner::Entity> fixedEntities);
@@ -268,6 +290,7 @@ namespace Banner
 			SDL_Event event;
 			int32_t width, height;
 			bool isRunning;
+			std::map<std::string, Texture> textures{ };
 			std::vector<Banner::Entity> fixedEntities{ };
 			void LoopInternal()
 			{
@@ -351,6 +374,8 @@ namespace Banner
 
 				SDL_RenderClear(renderer);
 				Loop();
+				SDL_RenderPresent(GetRenderer());
+				SDL_UpdateWindowSurface(GetWindow());
 			}
 	};
 }
@@ -367,8 +392,8 @@ namespace Banner
 */
 namespace Banner
 {
-	Entity::Entity(Vector2f p_pos, SDL_Texture *p_tex)
-	    : pos(p_pos), tex(p_tex)
+	Entity::Entity(Vector2f p_pos, Texture *p_tex)
+	    : pos(p_pos), tex(p_tex->t)
 	{
 		currentFrame.x = 0;
 		currentFrame.y = 0;
@@ -499,6 +524,28 @@ namespace Banner
 	SDL_Event BannerEngine::GetEvent()
 	{
 		return event;
+	}
+
+	Banner::ReturnCode Banner::BannerEngine::LoadTexture(std::string key, char * filepath)
+	{
+		Banner::ReturnCode response = Banner::ReturnCode::OK;
+		SDL_Surface *image = SDL_LoadBMP(filepath);
+		SDL_Texture *texture = SDL_CreateTextureFromSurface(GetRenderer(), image);
+		if (texture == NULL)
+		{
+			printf("Failed to load texture image %s\n", filepath);
+			response = Banner::ReturnCode::FAIL;
+		}
+
+		Texture t(&key,texture);
+		textures.insert(std::pair<std::string,Banner::Texture>(key,t));
+
+		return response;
+	}
+
+	std::map<std::string, Texture> BannerEngine::GetTextures()
+	{
+		return textures;
 	}
 
 	std::vector<Banner::Entity> BannerEngine::GetFixedEntities()

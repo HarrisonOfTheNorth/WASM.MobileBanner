@@ -50,11 +50,7 @@ SOFTWARE.
 */
 
 #include <iostream>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL_ttf.h>
 #include <vector>
-
 #if defined(__EMSCRIPTEN__)
 #include <emscripten/emscripten.h>
 #endif
@@ -110,7 +106,7 @@ public:
 
 	*/
 
-	void SetBalloonPresets(
+	void SetBalloonPresets( // for Balloon position-changing logic, checkout their use in the loop, it's a no-brainer
 				float preset_scaleMinimum,
 				float preset_scaleMaximum,
 				float preset_xForwards,
@@ -137,53 +133,18 @@ public:
 	{
 		Banner::ReturnCode response = Banner::ReturnCode::OK;
 
-		SDL_Surface *image = SDL_LoadBMP("resources/square_white_32x32.bmp");
-		tex_square_white_32x32 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_square_white_32x32 == NULL)
-		{
-			printf("Failed to load texture image 1!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
-
-		image = SDL_LoadBMP("resources/square_yellow_32x32.bmp");
-		tex_square_black_32x32 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_square_black_32x32 == NULL)
-		{
-			printf("Failed to load texture image 2!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
-
-		image = SDL_LoadBMP("resources/logo512x512.bmp");
-		tex_logo_512x512 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_logo_512x512 == NULL)
-		{
-			printf("Failed to load texture image 3!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
-
-		image = SDL_LoadBMP("resources/advertisementballoon512x512.bmp");
-		tex_advertisementballoon_512x512 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_advertisementballoon_512x512 == NULL)
-		{
-			printf("Failed to load texture image 4!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
-
-		image = SDL_LoadBMP("resources/qrcodeballoon512x512.bmp");
-		tex_qrcodeballoon_512x512 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_qrcodeballoon_512x512 == NULL)
-		{
-			printf("Failed to load texture image 5!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
-
-		image = SDL_LoadBMP("resources/youataresource463x62.bmp");
-		tex_youataresource_463x62 = SDL_CreateTextureFromSurface(GetRenderer(), image);
-		if (tex_youataresource_463x62 == NULL)
-		{
-			printf("Failed to load texture image 6!\n");
-			response = Banner::ReturnCode::FAIL;
-		}
+		response = LoadTexture((char*)"tex_square_white_32x32",(char*)"resources/square_white_32x32.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
+		response = LoadTexture((char*)"tex_square_yellow_32x32",(char*)"resources/square_yellow_32x32.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
+		response = LoadTexture((char*)"tex_logo_512x512",(char*)"resources/logo512x512.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
+		response = LoadTexture((char*)"tex_advertisementballoon_512x512",(char*)"resources/advertisementballoon512x512.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
+		response = LoadTexture((char*)"tex_qrcodeballoon_512x512",(char*)"resources/qrcodeballoon512x512.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
+		response = LoadTexture((char*)"tex_youataresource_463x62",(char*)"resources/youataresource463x62.bmp");
+		if(response==Banner::ReturnCode::FAIL) return response;
 
 		return response;
 	}
@@ -192,81 +153,83 @@ public:
 	{
 		std::vector<Banner::Entity> fixedEntities = GetFixedEntities();
 
+		std::map<std::string, Banner::Texture> textures =  GetTextures();
+
 		// White Background
-		Banner::Entity background(Banner::Vector2f(0, 0, GetScreenWidth(), GetScreenHeight()), tex_square_white_32x32);
+		Banner::Entity background(Banner::Vector2f(0, 0, GetScreenWidth(), GetScreenHeight()), &textures.find("tex_square_white_32x32")->second);
 		fixedEntities.push_back(background);
 
-		// top border entities
+		// top border entities, Yatter-Yellow
 		for (int x = 0; x < GetScreenWidth() / defaultTileWidth; x++)
 		{
 			{
-				Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+				Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, 0, defaultTileWidth, defaultTileWidth), &textures.find("tex_square_yellow_32x32")->second);
 				fixedEntities.push_back(tile);
 			}
 		}
 
-		// left border entities
+		// left border entities, Yatter-Yellow
 		for (int x = 0; x < GetScreenWidth() / defaultTileWidth; x++)
 		{
 			{
-				Banner::Entity tile(Banner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+				Banner::Entity tile(Banner::Vector2f(0, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), &textures.find("tex_square_yellow_32x32")->second);
 				fixedEntities.push_back(tile);
 			}
 		}
 
-		// bottom border entities
+		// bottom border entities, Yatter-Yellow
 		for (int x = 0; x < GetScreenWidth() / defaultTileWidth; x++)
 		{
 			{
-				Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, GetScreenHeight() - defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+				Banner::Entity tile(Banner::Vector2f(x * defaultTileWidth, GetScreenHeight() - defaultTileWidth, defaultTileWidth, defaultTileWidth), &textures.find("tex_square_yellow_32x32")->second);
 				fixedEntities.push_back(tile);
 			}
 		}
 
-		// right border entities
+		// right border entities, Yatter-Yellow
 		for (int x = 0; x < GetScreenWidth() / defaultTileWidth; x++)
 		{
 			{
-				Banner::Entity tile(Banner::Vector2f(GetScreenWidth() - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), tex_square_black_32x32);
+				Banner::Entity tile(Banner::Vector2f(GetScreenWidth() - defaultTileWidth, x * defaultTileWidth, defaultTileWidth, defaultTileWidth), &textures.find("tex_square_yellow_32x32")->second);
 				fixedEntities.push_back(tile);
 			}
 		}	
 
 		SetFixedEntities(fixedEntities);
-
-		std::cout << "Fixed Entities loaded: " << fixedEntities.size() << std::endl;	
 	}
 
 	void Loop() override
 	{
 		for (Banner::Entity &entity : GetFixedEntities()) // Render all the fixed entities
 		{
-			RenderEntity(entity);
+			RenderEntity(entity); // boom!
 		}
 
 		float logoScale = (GetScreenHeight() - (2.0f * defaultTileWidth)) / 512.0f; // Ours is a square logo of 512.0f wide
-		// and we want to fit it between both borders but allow the canvas to resize, hence the logo needs to be able to scale
+		// and we want to fit it between top and bottom borders but allow the canvas to resize, hence the logo needs to be able to scale
 
-		Banner::Entity yatrlogo(Banner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
-		RenderEntity(yatrlogo);
+		std::map<std::string, Banner::Texture> textures =  GetTextures();
+
+		Banner::Entity yatrlogo(Banner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), &textures.find("tex_logo_512x512")->second);
+		RenderEntity(yatrlogo); // boom!
 
 		if(GetScreenWidth() < 321.0f && GetScreenHeight() < 101.0f) // this is the trademark text, arbitrarily positioned
 		{
-			Banner::Entity text(Banner::Vector2f(GetScreenWidth() / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
-			RenderEntity(text);
+			Banner::Entity text(Banner::Vector2f(GetScreenWidth() / 3.68, 40, 463, 62, 0.45), &textures.find("tex_youataresource_463x62")->second);
+			RenderEntity(text); // boom!
 		}
 
 		{
 			// two balloons, but only one is rendered.
-			Banner::Entity red(Banner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
-			Banner::Entity blue(Banner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
+			Banner::Entity red(Banner::Vector2f(x, y, 512, 512, scale), &textures.find("tex_advertisementballoon_512x512")->second);
+			Banner::Entity blue(Banner::Vector2f(x, y, 512, 512, scale), &textures.find("tex_qrcodeballoon_512x512")->second);
 			if (x > GetScreenWidth() / 3)
 			{
-				RenderEntity(red);
+				RenderEntity(red); // boom!
 			}
 			else
 			{
-				RenderEntity(blue);
+				RenderEntity(blue); // boom!
 			}
 		}	
 
@@ -293,44 +256,19 @@ public:
 			SetBalloonPresets(0.7f, 1.5f, 1.0f, 0.0f, 0.9f, 1.0f, 0.0f, 0.8f, 0.002f);
 		}
 
-		// Balloon position-change logic
+		// Balloon position-change logic, a no-brainer!!!
 		if (forwards){x+=xForwards;}else{x-=xForwards;}
 		if (downwards){y+=yDownwards;}else{y-=yDownwards;}
 		if (growing){scale+=scaleGrowing;}else{scale-=scaleGrowing;}
 		if (x<(GetScreenWidth()*forwardsLeft)||x>(GetScreenWidth()*forwardsRight)){forwards=!forwards;}
 		if (y<(GetScreenHeight()*downwardsTop)||y>(GetScreenHeight()* downwardsBottom)){downwards=!downwards;}
 		if (scale<scaleMinimum||scale>scaleMaximum){growing=!growing;}
-
-		// Mandatory
-		SDL_RenderPresent(GetRenderer());
-		SDL_UpdateWindowSurface(GetWindow());
-	}
-
-	void Resize(int width, int height) override
-	{
-		resizedScale = false; // force re-scale)
-		CreateFixedEntities();		
-		SDL_SetWindowSize(GetWindow(), width, height);
 	}
 
 	~ExampleBannerAd() override
 	{
-
-		SDL_DestroyTexture(tex_logo_512x512);
-		SDL_DestroyTexture(tex_square_white_32x32);
-		SDL_DestroyTexture(tex_square_black_32x32);
-		SDL_DestroyTexture(tex_advertisementballoon_512x512);
-		SDL_DestroyTexture(tex_qrcodeballoon_512x512);
-		SDL_DestroyTexture(tex_youataresource_463x62);
+		// Destroy anything here as needed
 	}
-
-	private:
-		SDL_Texture *tex_logo_512x512;
-		SDL_Texture *tex_square_white_32x32;
-		SDL_Texture *tex_square_black_32x32;
-		SDL_Texture *tex_advertisementballoon_512x512;
-		SDL_Texture *tex_qrcodeballoon_512x512;
-		SDL_Texture *tex_youataresource_463x62;
 
 	private: // Balloon variable initial values:
 		float x; 		// balloon tex x
