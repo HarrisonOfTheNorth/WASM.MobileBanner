@@ -1,10 +1,18 @@
-#pragma region license
+#pragma region license, copyright, and trademarks
 /*
 	Banner.h
 	+-------------------------------------------------------------+
 	|                      y@R BannerEngine                       |
+	|                                                             |
 	|  "We host, you boast!" - Anthony Harrison                   |
+	|                                                             |
+	|                     You-At-A-Resource                       |
 	+-------------------------------------------------------------+
+
+Trademarks
+
+y@R and You-At-A-Service are trademarks of Count Anthony Harrison, 
+operating out of Cumberland in the UK
 
 MIT License
 
@@ -27,6 +35,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 */
 #pragma endregion
 
@@ -66,6 +75,9 @@ SOFTWARE.
 
 #pragma region 
 
+// A copy of the SDL_ version, but without the prefix - the advantage being 
+// that you don't need to include the SDL references in main.cpp unless
+// you otherwise need them.
 typedef enum
 {
     WINDOW_FULLSCREEN = 0x00000001,         /**< fullscreen window */
@@ -175,7 +187,7 @@ namespace Banner
 */
 namespace Banner
 {
-	// An item that is rendered as an SDL_Texture
+	// An item that is rendered on the canvas as an SDL_Texture
 	class Entity
 	{
 	public:
@@ -209,36 +221,47 @@ namespace Banner
 {
 	enum ReturnCode { FAIL = 0, OK = 1 };
 
+	// The BannerEngine itself, which your banner must inherit
 	class BannerEngine
 	{
 		public:
 			BannerEngine();
+
+		public:
+			char* ApplicationName;
+
+		public: // overrides
+			virtual Banner::ReturnCode LoadMedia();
+			virtual void CreateFixedEntities();
+			virtual void Loop();
+			virtual void Resize(int width, int height);
 			virtual ~BannerEngine();
 
-		public:
-			char* AppName;
-
-		public:
+		public: // lifecycle, Start calls LoadMedia, CreateFixedEntities, Loop, in that order
 			Banner::ReturnCode Construct(int32_t screen_w, int32_t screen_h, int flags);
-			virtual Banner::ReturnCode LoadMedia();
 			Banner::ReturnCode Start();
-			bool GetIsRunning();
+			void Quit();
+
+		public: // cancellation
 			void SetIsRunning(bool app_isRunning);
-			virtual void Loop();
+			bool GetIsRunning();
+			
+		public: // entities
+			void SetFixedEntities(std::vector<Banner::Entity> fixedEntities);
+			std::vector<Banner::Entity> GetFixedEntities();
+			void RenderEntity(Banner::Entity &p_entity);
+			
+		public:	// screen metadata
+			int32_t GetScreenWidth();
+			int32_t GetScreenHeight();
+
+		public: // lowlevel SDL objects
 			SDL_Window *GetWindow();
 			SDL_Renderer *GetRenderer();	
 			SDL_Surface *GetScreenSurface();
 			SDL_Event GetEvent();
-			std::vector<Banner::Entity> GetFixedEntities();
-			void SetFixedEntities(std::vector<Banner::Entity> fixedEntities);
-			virtual void CreateFixedEntities();
-			void RenderEntity(Banner::Entity &p_entity);
-			virtual void Resize(int width, int height);
-			int32_t GetScreenWidth();
-			int32_t GetScreenHeight();
-			void Quit();
-
-		private:
+	
+		private: // secret squirrel
 			SDL_Window *window;
 			SDL_Renderer *renderer;
 			SDL_Surface *screenSurface;
@@ -335,6 +358,13 @@ namespace Banner
 #pragma endregion
 
 #pragma region Entity_Implementation
+/*
+	Banner.h
+	+-------------------------------------------------------------+
+	|                      y@R BannerEngine                       |
+	|  Entity Implementation                                      |
+	+-------------------------------------------------------------+
+*/
 namespace Banner
 {
 	Entity::Entity(Vector2f p_pos, SDL_Texture *p_tex)
@@ -395,7 +425,7 @@ namespace Banner
 		TTF_Init();
 
 		window = SDL_CreateWindow(
-			(char*)AppName,
+			(char*)ApplicationName,
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
 			width,
@@ -525,7 +555,7 @@ namespace Banner
 
 		if(w!=width&&h!=height)
 		{
-			SDL_Log("XXXWindow Resized %d, %d", w, h);
+			SDL_Log("Window Resized %d, %d", w, h);
 			SDL_SetWindowSize(window, w, h);
 			width = w;
 			height = h;

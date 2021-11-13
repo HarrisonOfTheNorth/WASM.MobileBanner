@@ -3,8 +3,18 @@
 	main.cpp
 	+-------------------------------------------------------------+
 	|                      y@R BannerEngine                       |
+	|                                                             |
 	|  "We host, you boast!" - Anthony Harrison                   |
+	|                                                             |
+	|                     You-At-A-Resource                       |
 	+-------------------------------------------------------------+
+
+Trademarks
+
+y@R and You-At-A-Resource are trademarks of Count Anthony Harrison, 
+operating out of Cumberland in the UK.
+
+y@R is pronounced Yatter.
 
 MIT License
 
@@ -35,7 +45,7 @@ SOFTWARE.
 	main.cpp
 	+-------------------------------------------------------------+
 	|                      y@R BannerEngine                       |
-	|  Custom BannerEngine Implementation                         |
+	|  Example BannerEngine Implementation, 'ExampleBannerAd'     |
 	+-------------------------------------------------------------+
 */
 
@@ -51,19 +61,76 @@ SOFTWARE.
 
 #include "Banner.h"
 
-class BannerAd320x100 : public Banner::BannerEngine
+class ExampleBannerAd : public Banner::BannerEngine
 {
 public:
-	BannerAd320x100()
+	ExampleBannerAd()
 	{
 		Initialize();
 	}
 
-	void Resize(int width, int height) override
+	/*
+		Five overrides to write your code:
+
+		- LoadMedia
+		- CreateFixedEntities
+		- Loop
+		- Resize
+		- ~[Destructor]
+
+		With all of the following accessible as well:
+		
+		- Start();
+		- SetIsRunning(bool app_isRunning);
+		- GetIsRunning();
+		- void SetFixedEntities(std::vector<Banner::Entity> fixedEntities);
+		- std::vector<Banner::Entity> GetFixedEntities();
+		- void RenderEntity(Banner::Entity &p_entity);
+		- int32_t GetScreenWidth();
+		- int32_t GetScreenHeight();
+		- void Quit();
+
+		As well as access to the low-level SDL2 objects:
+
+		- SDL_Window *GetWindow();
+		- SDL_Renderer *GetRenderer();	
+		- SDL_Surface *GetScreenSurface();
+		- SDL_Event GetEvent();
+
+		Called in Main as follows (example):
+
+		  Banner::BannerEngine* banner310x100 = new ExampleBannerAd();
+
+		  int applicationFlags = WINDOW_SHOWN | WINDOW_ALWAYS_ON_TOP;
+		  int wasmFlags = WINDOW_SHOWN;
+
+		  banner310x100->Construct(320,100,applicationFlags); 
+		  banner310x100->Start();
+		  banner310x100->Quit();
+
+	*/
+
+	void SetBalloonPresets(
+				float preset_scaleMinimum,
+				float preset_scaleMaximum,
+				float preset_xForwards,
+				float preset_forwardsLeft,
+				float preset_forwardsRight, 
+				float preset_yDownwards,
+				float preset_downwardsTop,
+				float preset_downwardsBottom,
+				float preset_scaleGrowing
+	)
 	{
-		resizedScale = false; // force re-scale)
-		CreateFixedEntities();		
-		SDL_SetWindowSize(GetWindow(), width, height);
+		scaleMinimum = preset_scaleMinimum;
+		scaleMaximum = preset_scaleMaximum;
+		xForwards = preset_xForwards;
+		forwardsLeft = preset_forwardsLeft;
+		forwardsRight = preset_forwardsRight;
+		yDownwards = preset_yDownwards;
+		downwardsTop = preset_downwardsTop;
+		downwardsBottom = preset_downwardsBottom;
+		scaleGrowing = preset_scaleGrowing;
 	}
 
 	Banner::ReturnCode LoadMedia() override
@@ -128,6 +195,7 @@ public:
 		// White Background
 		Banner::Entity background(Banner::Vector2f(0, 0, GetScreenWidth(), GetScreenHeight()), tex_square_white_32x32);
 		fixedEntities.push_back(background);
+
 		// top border entities
 		for (int x = 0; x < GetScreenWidth() / defaultTileWidth; x++)
 		{
@@ -171,23 +239,25 @@ public:
 
 	void Loop() override
 	{
-		for (Banner::Entity &entity : GetFixedEntities())
+		for (Banner::Entity &entity : GetFixedEntities()) // Render all the fixed entities
 		{
 			RenderEntity(entity);
 		}
 
-			float logoScale = (GetScreenHeight() - (2.0f * defaultTileWidth)) / 512.0f;
+		float logoScale = (GetScreenHeight() - (2.0f * defaultTileWidth)) / 512.0f; // Ours is a square logo of 512.0f wide
+		// and we want to fit it between both borders but allow the canvas to resize, hence the logo needs to be able to scale
 
 		Banner::Entity yatrlogo(Banner::Vector2f(defaultTileWidth, defaultTileWidth, 512, 512, logoScale), tex_logo_512x512);
 		RenderEntity(yatrlogo);
 
-		if(GetScreenWidth() < 321.0f && GetScreenHeight() < 101.0f)
+		if(GetScreenWidth() < 321.0f && GetScreenHeight() < 101.0f) // this is the trademark text, arbitrarily positioned
 		{
 			Banner::Entity text(Banner::Vector2f(GetScreenWidth() / 3.68, 40, 463, 62, 0.45), tex_youataresource_463x62);
 			RenderEntity(text);
 		}
 
 		{
+			// two balloons, but only one is rendered.
 			Banner::Entity red(Banner::Vector2f(x, y, 512, 512, scale), tex_advertisementballoon_512x512);
 			Banner::Entity blue(Banner::Vector2f(x, y, 512, 512, scale), tex_qrcodeballoon_512x512);
 			if (x > GetScreenWidth() / 3)
@@ -200,68 +270,27 @@ public:
 			}
 		}	
 
-		// Balloon change presets by screen width
-		float scaleMinimum = 0.0f;
-		float scaleMaximum = 0.0f;
-		float xForwards = 0.0f;
-		float forwardsLeft = 0.0f;
-		float forwardsRight = 0.0f;
-		float yDownwards = 0.0f;
-		float downwardsTop = 0.0f;
-		float downwardsBottom = 0.0f;
-		float scaleGrowing = 0.0f;
-
+		// the black art of plugging in various values for each screen-width until the balloon moved with grace,
+		// appropriate sizing, and appropriate growth and shrinking within appropriate boundaries.
 		if(GetScreenWidth() < 400)
 		{
 			if(!resizedScale) scale = 0.2f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
-			scaleMinimum = 0.1f;
-			scaleMaximum = 0.5f;
-			xForwards = 0.4f;
-			forwardsLeft = 0.0f;
-			forwardsRight = 1.0;
-			yDownwards = 0.4f;
-			downwardsTop = 0.00f;
-			downwardsBottom = 1.0f;
-			scaleGrowing = 0.002f;
+			SetBalloonPresets(0.1f, 0.5f, 0.4f, 0.0f, 1.0f, 0.4f, 0.00f, 1.0f, 0.002f);
 		}
 		else if(GetScreenWidth() < 800)
 		{
 			if(!resizedScale) scale = 0.4f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
-			scaleMinimum = 0.3f;
-			scaleMaximum = 1.0f;
-			xForwards = 0.6f;
-			forwardsLeft = 0.0f;
-			forwardsRight = 1.0;
-			yDownwards = 0.6f;
-			downwardsTop = 0.0f;
-			downwardsBottom = 1.0f;
-			scaleGrowing = 0.002f;
+			SetBalloonPresets(0.3f, 1.0f, 0.6f, 0.0f, 1.0f, 0.6f, 0.0f, 1.0f, 0.002f);
 		}
 		else if(GetScreenWidth() < 1200)
 		{
 			if(!resizedScale) scale = 0.8f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
-			scaleMinimum = 0.7f;
-			scaleMaximum = 1.5f;
-			xForwards = 0.8f;
-			forwardsLeft = 0.0f;
-			forwardsRight = 0.9f;
-			yDownwards = 0.8f;
-			downwardsTop = 0.0f;
-			downwardsBottom = 0.8f;
-			scaleGrowing = 0.002f;
+			SetBalloonPresets(0.7f, 1.5f, 0.8f, 0.0f, 0.9f, 0.8f, 0.0f, 0.8f,0.002f);
 		}
 		else
 		{
 			if(!resizedScale) scale = 0.8f; resizedScale = true; // must be between scaleMinimum and scaleMaximum
-			scaleMinimum = 0.7f;
-			scaleMaximum = 1.5f;
-			xForwards = 1.0f;
-			forwardsLeft = 0.0f;
-			forwardsRight = 0.9f;
-			yDownwards = 1.0f;
-			downwardsTop = 0.0f;
-			downwardsBottom = 0.8f;
-			scaleGrowing = 0.002f;
+			SetBalloonPresets(0.7f, 1.5f, 1.0f, 0.0f, 0.9f, 1.0f, 0.0f, 0.8f, 0.002f);
 		}
 
 		// Balloon position-change logic
@@ -272,13 +301,21 @@ public:
 		if (y<(GetScreenHeight()*downwardsTop)||y>(GetScreenHeight()* downwardsBottom)){downwards=!downwards;}
 		if (scale<scaleMinimum||scale>scaleMaximum){growing=!growing;}
 
+		// Mandatory
 		SDL_RenderPresent(GetRenderer());
 		SDL_UpdateWindowSurface(GetWindow());
-
 	}
 
-	~BannerAd320x100() override
+	void Resize(int width, int height) override
 	{
+		resizedScale = false; // force re-scale)
+		CreateFixedEntities();		
+		SDL_SetWindowSize(GetWindow(), width, height);
+	}
+
+	~ExampleBannerAd() override
+	{
+
 		SDL_DestroyTexture(tex_logo_512x512);
 		SDL_DestroyTexture(tex_square_white_32x32);
 		SDL_DestroyTexture(tex_square_black_32x32);
@@ -305,9 +342,21 @@ public:
 		bool downwards;	     	// is balloon moving downwards?	
 		float defaultTileWidth;
 
+	private: // Variables that affect Balloon delta changes per frame
+		float scaleMinimum; // how small will the balloon shrink?
+		float scaleMaximum; // how big will the balloon grow?
+		float xForwards; // how far will x advance when moving forwards
+		float forwardsLeft; // minimum forwards flip-flop
+		float forwardsRight; // maximum forwards flip-flop
+		float yDownwards; // how far will y advance when moving downwards
+		float downwardsTop; // minimum downwards flip-flop
+		float downwardsBottom; // maximum downwards flip-flop
+		float scaleGrowing; // growth increment
+
+
 		void Initialize()
 		{
-			AppName = (char*)"Example 310x100"; // in the base class
+			ApplicationName = (char*)"Example 310x100"; // in the base class
 
 			x = GetScreenWidth() * 0.1;
 			y = GetScreenHeight() / 5;
@@ -330,7 +379,7 @@ public:
 	|  Main Implementation - Entry Point - main()                 |
 	+-------------------------------------------------------------+
 */
-Banner::BannerEngine* banner310x100 = new BannerAd320x100();
+Banner::BannerEngine* banner310x100 = new ExampleBannerAd();
 
 extern "C"
 {
@@ -351,12 +400,10 @@ extern "C"
 int main()
 {
 
-	#if defined(__EMSCRIPTEN__)
-	WindowFlags flags = WINDOW_SHOWN;
-	#else
-	int flags = WINDOW_SHOWN | WINDOW_ALWAYS_ON_TOP;
-	#endif
-	banner310x100->Construct(320,100,flags); 
+	int applicationFlags = WINDOW_SHOWN | WINDOW_ALWAYS_ON_TOP;
+	int wasmFlags = WINDOW_SHOWN;
+
+	banner310x100->Construct(320,100,applicationFlags); 
 	banner310x100->Start();
 	banner310x100->Quit();
 
